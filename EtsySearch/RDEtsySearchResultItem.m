@@ -11,12 +11,17 @@
 @implementation RDEtsySearchResultItem
 
 
-- (instancetype)initWithListingID:(int)listingID title:(NSString *)title itemDescription:(NSString *)itemDescription imageURL:(NSURL *)imageURL {
+- (instancetype)initWithListingID:(NSInteger)listingID
+                            title:(NSString *)title
+                  itemDescription:(NSString *)itemDescription
+                       listingURL:(NSURL *)listingURL
+                         imageURL:(NSURL *)imageURL {
     self = [super init];
     if(self) {
         _listing_id = listingID;
         _title = title;
         _itemDescription = itemDescription;
+        _listingURL = listingURL;
         _imageURL = imageURL;
     }
     

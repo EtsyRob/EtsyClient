@@ -12,7 +12,6 @@
 
 @interface RDEtsyClientSearchResult : NSObject
 
-//TODO: Is it possible to make this read only?
 @property (nonatomic, strong, readonly) NSArray<RDEtsySearchResultItem*> *results;
 @property (nonatomic, strong, readonly) NSURL *searchURL;
 @property (nonatomic, assign, readonly) NSInteger currentPage;

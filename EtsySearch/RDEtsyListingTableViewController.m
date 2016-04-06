@@ -12,13 +12,16 @@
 #import "RDEtsyClient.h"
 #import "RDEtsyListingTableViewCell.h"
 #import "UIColor+Hex.h"
+#import "RDThumbnailImageCache.h"
+#import <SafariServices/SafariServices.h>
 
-static NSString *cellIdentifier = @"basicCellIdentifier";
-static NSString *apiKey = @"liwecjs0c3ssk6let4p1wqt9";
-static NSString *defaultSearchTerm = @"Wooden Chairs";
+static NSString *CellIdentifier = @"basicCellIdentifier";
+static NSString *ApiKey = @"liwecjs0c3ssk6let4p1wqt9";
+static NSString *DefaultSearchTerm = @"Wooden Chairs";
+
+static NSInteger LoadMoreDataThreshold = 8;
 
 @interface RDEtsyClientSearchResult(Backfill)
-//+ (void)backfillResultsFromSearchResult:(RDEtsyClientSearchResult *)searchResult;
 + (RDEtsyClientSearchResult *)searchResultByPrependingSearchResult:(RDEtsyClientSearchResult *)fromSearchResult intoSearchResult:(RDEtsyClientSearchResult *)intoSearchResult;
 @end
 
@@ -32,19 +35,15 @@ static NSString *defaultSearchTerm = @"Wooden Chairs";
     return newSearchResult;
 }
 
-//- (void)backfillResultsFromSearchResult:(RDEtsyClientSearchResult *)searchResult {
-//    NSArray *newResults = [searchResult.results arrayByAddingObjectsFromArray:self.results];
-//    self.results = newResults;
-//}
-
 @end
 
 
 
-@interface RDEtsyListingTableViewController () <UISearchBarDelegate>
+@interface RDEtsyListingTableViewController () <UISearchResultsUpdating>
 @property (nonatomic, strong) RDEtsyClientSearchResult *searchResult;
 @property (nonatomic, strong) RDEtsyClient *etsyClient;
-@property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
+@property (nonatomic, strong) RDThumbnailImageCache *imageCache;
+@property (nonatomic, strong) UISearchController *searchController;
 
 @property (nonatomic) BOOL updating;
 
@@ -55,18 +54,23 @@ static NSString *defaultSearchTerm = @"Wooden Chairs";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.etsyClient = [[RDEtsyClient alloc] initWithApiKey:apiKey];
-    [self loadDataWithQueryText:defaultSearchTerm];
+    self.etsyClient = [[RDEtsyClient alloc] initWithApiKey:ApiKey];
     self.tableView.estimatedRowHeight = 100;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.navigationController.navigationBarHidden = NO;
+    self.imageCache = [[RDThumbnailImageCache alloc] init];
     [self applyTheme];
-    self.searchBar.delegate = self;
-
-    
-    // Do any additional setup after loading the view.
+    [self setupSearchController];
+    [self loadDataWithQueryText:DefaultSearchTerm];
 }
 
+
+- (void)setupSearchController {
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    self.searchController.searchResultsUpdater = self;
+    self.searchController.dimsBackgroundDuringPresentation = NO;
+    self.tableView.tableHeaderView = self.searchController.searchBar;
+}
 
 - (void)applyTheme {
     self.navigationController.navigationBar.barTintColor = [UIColor colorFromHexString:@"34A8C4"];
@@ -75,15 +79,14 @@ static NSString *defaultSearchTerm = @"Wooden Chairs";
 }
 
 - (void)loadDataWithQueryText:(NSString *)queryText {
+    //TODO: Should dispatch these onto a queue and only process the current and next search
     [self.etsyClient getListingsWithQueryText:queryText completion:^(RDEtsyClientSearchResult *searchResult) {
-        if(searchResult) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                //TODO: Merge results
-                self.searchResult = searchResult;
-                [self.tableView reloadData];
-            });
-        }
+    
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.imageCache clearCache];
+            self.searchResult = searchResult;
+            [self.tableView reloadData];
+        });
     }];
 }
 
@@ -91,14 +94,18 @@ static NSString *defaultSearchTerm = @"Wooden Chairs";
     if(self.updating) {
         NSLog(@"Skipping loading more results, already updating...");
     } else {
-        //TODO: Do I have to sync this?
+        
         self.updating = YES;
         [self.etsyClient getMoreListingsWithSearchResult:self.searchResult completion:^(RDEtsyClientSearchResult *searchResult) {
             
-            //TODO: Need to lock on touching the searchResult array
-            RDEtsyClientSearchResult *newResults = [RDEtsyClientSearchResult searchResultByPrependingSearchResult:self.searchResult intoSearchResult:searchResult];
-            self.searchResult = newResults;
             dispatch_async(dispatch_get_main_queue(), ^{
+                if(searchResult) {
+                    RDEtsyClientSearchResult *newResults = [RDEtsyClientSearchResult searchResultByPrependingSearchResult:self.searchResult intoSearchResult:searchResult   ];
+                    self.searchResult = newResults;
+                } else {
+                    self.searchResult = searchResult;
+                }
+                
                 [self.tableView reloadData];
                 self.updating = NO;
             });
@@ -122,22 +129,16 @@ static NSString *defaultSearchTerm = @"Wooden Chairs";
 - (void)configureCell:(RDEtsyListingTableViewCell *)cell forSearchResultItem:(RDEtsySearchResultItem *)searchResultItem {
     cell.listingTitle.text = searchResultItem.title;
     cell.imageView.image = nil;
-    
-    NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *urlSession = [NSURLSession sessionWithConfiguration:sessionConfiguration];
+
     if (searchResultItem.imageURL) {
-        NSURLSessionDataTask *dataTask = [urlSession dataTaskWithURL:searchResultItem.imageURL completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            if(data) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    cell.imageView.image = [UIImage imageWithData:data];
-                    [cell setNeedsLayout];
-                });
-            }
+        [self.imageCache imageForURL:searchResultItem.imageURL completion:^(UIImage *image) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                cell.imageView.image = image;
+                [cell setNeedsLayout];
+            });
         }];
-        
-        [dataTask resume];
     }
-    
+
 }
 
 
@@ -157,7 +158,7 @@ static NSString *defaultSearchTerm = @"Wooden Chairs";
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     RDEtsySearchResultItem *searchResultItem = [self searchResultItemAtIndexPath:indexPath];
     if([cell isKindOfClass:[RDEtsyListingTableViewCell class]]) {
@@ -169,33 +170,30 @@ static NSString *defaultSearchTerm = @"Wooden Chairs";
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    //TODO: Move the 8 into a var
-    if((self.searchResult.results.count - indexPath.row) <= 8) {
+    if((self.searchResult.results.count - indexPath.row) <= LoadMoreDataThreshold) {
         [self loadMoreResults];
     }
 }
 
+#pragma mark - UITableViewDelegate
 
-#pragma mark - UISearchBarDelegate
-
-//If the user clears the search bar, bring back the default text
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    if([searchText isEqualToString:@""]) {
-        [self loadDataWithQueryText:defaultSearchTerm];
-    }
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    RDEtsySearchResultItem *searchResultItem = [self searchResultItemAtIndexPath:indexPath];
+    SFSafariViewController *safariViewController = [[SFSafariViewController alloc] initWithURL:searchResultItem.listingURL];
+    
+    [self presentViewController:safariViewController animated:YES completion:nil];
 }
 
-- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
-    return YES;
-}
 
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+#pragma mark - UISearchResultsUpdating
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     NSString *searchText;
-    if([searchBar.text isEqualToString:@""]) {
-        searchText = defaultSearchTerm;
+    if([searchController.searchBar.text isEqualToString:@""]) {
+        searchText = DefaultSearchTerm;
     } else {
-        searchText = searchBar.text;
+        searchText = searchController.searchBar.text;
     }
+    
     [self loadDataWithQueryText:searchText];
 }
 

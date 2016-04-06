@@ -10,18 +10,17 @@
 
 @interface RDEtsySearchResultItem : NSObject
 
-@property (nonatomic, assign) int listing_id;
+@property (nonatomic, assign) NSInteger listing_id;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *itemDescription;
-
-//TODO: Will have multiple image URLs
+@property (nonatomic, strong) NSURL *listingURL;
 @property (nonatomic, strong) NSURL *imageURL;
 
 
 
-//TODO: What do write about the other fields that we're not supporting?
-- (instancetype)initWithListingID:(int)listingID
+- (instancetype)initWithListingID:(NSInteger)listingID
                             title:(NSString *)title
                   itemDescription:(NSString *)itemDescription
+                       listingURL:(NSURL *)listingURL
                          imageURL:(NSURL *)imageURL;
 @end

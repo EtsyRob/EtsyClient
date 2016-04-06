@@ -14,14 +14,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" id="G2G-cC-afZ">
-                            <rect key="frame" x="0.0" y="64" width="600" height="44"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="basicCellIdentifier" rowHeight="100" id="0lE-FS-DUc" customClass="RDEtsyListingTableViewCell">
-                                <rect key="frame" x="0.0" y="136" width="600" height="100"/>
+                                <rect key="frame" x="0.0" y="92" width="600" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0lE-FS-DUc" id="WB0-8a-CBm">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="99"/>
@@ -72,9 +67,6 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Listings" id="wnL-Wt-UFl"/>
-                    <connections>
-                        <outlet property="searchBar" destination="G2G-cC-afZ" id="gx3-gC-ZVv"/>
-                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I6e-Kz-P2G" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -14,8 +14,11 @@
 
 @implementation RDEtsyClientSearchResult
 
-//TODO: return nil if correct results not returned
 - (instancetype)initWithResults:(NSArray *)results currentPage:(NSInteger)currentPage nextPage:(NSInteger)nextPage searchURL:(NSURL *)searchURL{
+    if(!searchURL || !results) {
+        return nil;
+    }
+    
     self = [super init];
     if(self) {
         _nextPage = nextPage;

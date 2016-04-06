@@ -19,8 +19,10 @@
 @implementation RDEtsyClient
 
 
-//TODO: Return nil if no apiKey
 - (instancetype)initWithApiKey:(NSString *)apiKey {
+    if(!apiKey) {
+        return nil;
+    }
     self = [super init];
     if(self) {
         _apiKey = apiKey;
@@ -33,12 +35,10 @@
     
     NSString *escapedSearch = [queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
-    //TODO: Come back and use NSURLComponents
     NSString *urlString = [NSString stringWithFormat:@"https://api.etsy.com/v2/listings/active?api_key=%@&includes=MainImage&keywords=%@", self.apiKey, escapedSearch];
     if(page) {
         urlString = [urlString stringByAppendingString:[NSString stringWithFormat:@"&page=%d", page.intValue]];
     }
-    
     
     NSURL *url = [[NSURL alloc] initWithString:urlString];
     return url;
@@ -55,12 +55,27 @@
     
     NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:previousSearchURL resolvingAgainstBaseURL:NO];
     
-    //TODO: Need to create query item if it doesn't exist
     NSMutableArray *queryItems = [[urlComponents queryItems] mutableCopy];
+    NSString *nextPageString = [NSString stringWithFormat:@"%ld", (long)nextPage];
     
-    //TODO: What is the expected behavior if page already exists?
-    [queryItems addObject:[NSURLQueryItem queryItemWithName:@"page" value:[NSString stringWithFormat:@"%ld", (long)nextPage]]];
+    NSURLQueryItem *nextPageQueryItem = [NSURLQueryItem queryItemWithName:@"page" value:nextPageString];
     
+    BOOL foundPage = NO;
+    //Swap the page query item with the next page
+    for(NSInteger i = 0; i < queryItems.count; i++) {
+        NSURLQueryItem *queryItem = queryItems[i];
+        if([queryItem.name isEqualToString:@"page"]) {
+            foundPage = YES;
+            queryItems[i] = nextPageQueryItem;
+            break;
+        }
+
+    }
+    if(!foundPage) {
+        [queryItems addObject:nextPageQueryItem];
+    }
+    
+
     urlComponents.queryItems = queryItems;
     NSURL *url = [urlComponents URL];
     
@@ -78,15 +93,18 @@
     
     NSURLSessionDataTask *dataTask = [urlSession dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if(error) {
-            //TODO: Log error
+            NSLog(@"Error getting listings with URL: %@, error: %@", url, error);
             return completion(nil);
         }
-        if(![self isValidResponseCode:response]) {
-            //TODO: Log error
-            return completion(nil);
+        if([response isKindOfClass:[NSHTTPURLResponse class]]) {
+            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+            if(![self isValidResponseCode:httpResponse]) {
+                NSLog(@"Invalid response returned while getting listings with URL: %@, responseCode: %ld", url, (long)httpResponse.statusCode);
+                return completion(nil);
+            }
         }
         if(!data) {
-            //TODO: Log error
+            NSLog(@"No data returned while gettings listings with URL: %@", url);
             return completion(nil);
         }
         

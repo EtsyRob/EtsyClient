@@ -23,6 +23,7 @@
 		D408BD4A1CB46F50004A08E7 /* RDEtsySearchResultParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD491CB46F50004A08E7 /* RDEtsySearchResultParser.m */; };
 		D408BD4F1CB4825D004A08E7 /* RDEtsyListingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD4E1CB4825D004A08E7 /* RDEtsyListingTableViewCell.m */; };
 		D408BD521CB4886F004A08E7 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD511CB4886F004A08E7 /* UIColor+Hex.m */; };
+		D408BD551CB5CADE004A08E7 /* RDThumbnailImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD541CB5CADE004A08E7 /* RDThumbnailImageCache.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,8 @@
 		D408BD4E1CB4825D004A08E7 /* RDEtsyListingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDEtsyListingTableViewCell.m; sourceTree = "<group>"; };
 		D408BD501CB4886F004A08E7 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		D408BD511CB4886F004A08E7 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
+		D408BD531CB5CADE004A08E7 /* RDThumbnailImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDThumbnailImageCache.h; sourceTree = "<group>"; };
+		D408BD541CB5CADE004A08E7 /* RDThumbnailImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDThumbnailImageCache.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +120,8 @@
 				D408BD4E1CB4825D004A08E7 /* RDEtsyListingTableViewCell.m */,
 				D408BD501CB4886F004A08E7 /* UIColor+Hex.h */,
 				D408BD511CB4886F004A08E7 /* UIColor+Hex.m */,
+				D408BD531CB5CADE004A08E7 /* RDThumbnailImageCache.h */,
+				D408BD541CB5CADE004A08E7 /* RDThumbnailImageCache.m */,
 			);
 			path = EtsySearch;
 			sourceTree = "<group>";
@@ -257,6 +262,7 @@
 				D408BD141CB4669D004A08E7 /* AppDelegate.m in Sources */,
 				D408BD401CB4693F004A08E7 /* RDEtsySearchResultItem.m in Sources */,
 				D408BD4A1CB46F50004A08E7 /* RDEtsySearchResultParser.m in Sources */,
+				D408BD551CB5CADE004A08E7 /* RDThumbnailImageCache.m in Sources */,
 				D408BD111CB4669D004A08E7 /* main.m in Sources */,
 				D408BD521CB4886F004A08E7 /* UIColor+Hex.m in Sources */,
 				D408BD391CB466BB004A08E7 /* RDEtsyClient.m in Sources */,
