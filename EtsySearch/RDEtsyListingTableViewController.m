@@ -18,15 +18,24 @@ static NSString *apiKey = @"liwecjs0c3ssk6let4p1wqt9";
 static NSString *defaultSearchTerm = @"Wooden Chairs";
 
 @interface RDEtsyClientSearchResult(Backfill)
-- (void)backfillResultsFromSearchResult:(RDEtsyClientSearchResult *)searchResult;
+//+ (void)backfillResultsFromSearchResult:(RDEtsyClientSearchResult *)searchResult;
++ (RDEtsyClientSearchResult *)searchResultByPrependingSearchResult:(RDEtsyClientSearchResult *)fromSearchResult intoSearchResult:(RDEtsyClientSearchResult *)intoSearchResult;
 @end
 
 @implementation RDEtsyClientSearchResult(Backfill)
 
-- (void)backfillResultsFromSearchResult:(RDEtsyClientSearchResult *)searchResult {
-    NSArray *newResults = [searchResult.results arrayByAddingObjectsFromArray:self.results];
-    self.results = newResults;
++ (RDEtsyClientSearchResult *)searchResultByPrependingSearchResult:(RDEtsyClientSearchResult *)fromSearchResult intoSearchResult:(RDEtsyClientSearchResult *)intoSearchResult {
+    
+    NSArray *newResults = [fromSearchResult.results arrayByAddingObjectsFromArray:intoSearchResult.results];
+    
+    RDEtsyClientSearchResult *newSearchResult = [[RDEtsyClientSearchResult alloc] initWithResults:newResults currentPage:intoSearchResult.currentPage nextPage:intoSearchResult.nextPage searchURL:intoSearchResult.searchURL];
+    return newSearchResult;
 }
+
+//- (void)backfillResultsFromSearchResult:(RDEtsyClientSearchResult *)searchResult {
+//    NSArray *newResults = [searchResult.results arrayByAddingObjectsFromArray:self.results];
+//    self.results = newResults;
+//}
 
 @end
 
@@ -87,8 +96,8 @@ static NSString *defaultSearchTerm = @"Wooden Chairs";
         [self.etsyClient getMoreListingsWithSearchResult:self.searchResult completion:^(RDEtsyClientSearchResult *searchResult) {
             
             //TODO: Need to lock on touching the searchResult array
-            [searchResult backfillResultsFromSearchResult:self.searchResult];
-            self.searchResult = searchResult;
+            RDEtsyClientSearchResult *newResults = [RDEtsyClientSearchResult searchResultByPrependingSearchResult:self.searchResult intoSearchResult:searchResult];
+            self.searchResult = newResults;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
                 self.updating = NO;

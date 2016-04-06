@@ -12,14 +12,14 @@
 
 @interface RDEtsyClientSearchResult : NSObject
 
-@property (nonatomic, strong) NSArray<RDEtsySearchResultItem*> *results;
-@property (nonatomic, strong) NSURL *searchURL;
-@property (nonatomic, assign) NSInteger currentPage;
-@property (nonatomic, assign) NSInteger nextPage;
+//TODO: Is it possible to make this read only?
+@property (nonatomic, strong, readonly) NSArray<RDEtsySearchResultItem*> *results;
+@property (nonatomic, strong, readonly) NSURL *searchURL;
+@property (nonatomic, assign, readonly) NSInteger currentPage;
+@property (nonatomic, assign, readonly) NSInteger nextPage;
 
 
 - (instancetype)initWithResults:(NSArray *)results currentPage:(NSInteger)currentPage nextPage:(NSInteger)nextPage searchURL:(NSURL *)searchURL;
-
 
 @end
  
