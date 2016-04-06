@@ -15,10 +15,30 @@
 
 static NSString *cellIdentifier = @"basicCellIdentifier";
 static NSString *apiKey = @"liwecjs0c3ssk6let4p1wqt9";
+static NSString *defaultSearchTerm = @"Wooden Chairs";
 
-@interface RDEtsyListingTableViewController ()
+@interface RDEtsyClientSearchResult(Backfill)
+- (void)backfillResultsFromSearchResult:(RDEtsyClientSearchResult *)searchResult;
+@end
+
+@implementation RDEtsyClientSearchResult(Backfill)
+
+- (void)backfillResultsFromSearchResult:(RDEtsyClientSearchResult *)searchResult {
+    NSArray *newResults = [searchResult.results arrayByAddingObjectsFromArray:self.results];
+    self.results = newResults;
+}
+
+@end
+
+
+
+@interface RDEtsyListingTableViewController () <UISearchBarDelegate>
 @property (nonatomic, strong) RDEtsyClientSearchResult *searchResult;
 @property (nonatomic, strong) RDEtsyClient *etsyClient;
+@property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
+
+@property (nonatomic) BOOL updating;
+
 
 @end
 
@@ -27,14 +47,17 @@ static NSString *apiKey = @"liwecjs0c3ssk6let4p1wqt9";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.etsyClient = [[RDEtsyClient alloc] initWithApiKey:apiKey];
-    [self loadDataWithQueryText:@"Wooden Chairs"];
+    [self loadDataWithQueryText:defaultSearchTerm];
     self.tableView.estimatedRowHeight = 100;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.navigationController.navigationBarHidden = NO;
     [self applyTheme];
+    self.searchBar.delegate = self;
+
     
     // Do any additional setup after loading the view.
 }
+
 
 - (void)applyTheme {
     self.navigationController.navigationBar.barTintColor = [UIColor colorFromHexString:@"34A8C4"];
@@ -53,6 +76,25 @@ static NSString *apiKey = @"liwecjs0c3ssk6let4p1wqt9";
             });
         }
     }];
+}
+
+- (void)loadMoreResults {
+    if(self.updating) {
+        NSLog(@"Skipping loading more results, already updating...");
+    } else {
+        //TODO: Do I have to sync this?
+        self.updating = YES;
+        [self.etsyClient getMoreListingsWithSearchResult:self.searchResult completion:^(RDEtsyClientSearchResult *searchResult) {
+            
+            //TODO: Need to lock on touching the searchResult array
+            [searchResult backfillResultsFromSearchResult:self.searchResult];
+            self.searchResult = searchResult;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+                self.updating = NO;
+            });
+        }];
+    }
 }
 
 
@@ -116,6 +158,38 @@ static NSString *apiKey = @"liwecjs0c3ssk6let4p1wqt9";
     
     return cell;
 }
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    //TODO: Move the 8 into a var
+    if((self.searchResult.results.count - indexPath.row) <= 8) {
+        [self loadMoreResults];
+    }
+}
+
+
+#pragma mark - UISearchBarDelegate
+
+//If the user clears the search bar, bring back the default text
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    if([searchText isEqualToString:@""]) {
+        [self loadDataWithQueryText:defaultSearchTerm];
+    }
+}
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
+    return YES;
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    NSString *searchText;
+    if([searchBar.text isEqualToString:@""]) {
+        searchText = defaultSearchTerm;
+    } else {
+        searchText = searchBar.text;
+    }
+    [self loadDataWithQueryText:searchText];
+}
+
 
 
 

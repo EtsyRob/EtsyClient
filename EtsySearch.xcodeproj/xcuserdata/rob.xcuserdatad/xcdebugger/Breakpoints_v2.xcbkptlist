@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EtsySearch/RDEtsyListingTableViewController.m"
-            timestampString = "481593967.710289"
+            timestampString = "481596183.694291"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "35"
-            endingLineNumber = "35"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -36,11 +36,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EtsySearch/RDEtsyListingTableViewController.m"
-            timestampString = "481594253.349008"
+            timestampString = "481596183.694291"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
             landmarkName = "-configureCell:forSearchResultItem:"
             landmarkType = "5">
          </BreakpointContent>

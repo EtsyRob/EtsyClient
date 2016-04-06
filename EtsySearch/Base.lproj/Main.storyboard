@@ -14,9 +14,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="G2G-cC-afZ">
+                            <rect key="frame" x="0.0" y="64" width="600" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="basicCellIdentifier" rowHeight="100" id="0lE-FS-DUc" customClass="RDEtsyListingTableViewCell">
-                                <rect key="frame" x="0.0" y="92" width="600" height="100"/>
+                                <rect key="frame" x="0.0" y="136" width="600" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0lE-FS-DUc" id="WB0-8a-CBm">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="99"/>
@@ -37,9 +42,11 @@
                                         </label>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstItem="llS-xl-oeN" firstAttribute="top" relation="greaterThanOrEqual" secondItem="WB0-8a-CBm" secondAttribute="topMargin" id="8hR-Kd-cYM"/>
                                         <constraint firstItem="llS-xl-oeN" firstAttribute="top" secondItem="WB0-8a-CBm" secondAttribute="topMargin" id="Fwl-TC-uCU"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="pTi-8x-4vd" secondAttribute="bottom" constant="10" id="GIh-O8-pUd"/>
                                         <constraint firstItem="pTi-8x-4vd" firstAttribute="leading" secondItem="llS-xl-oeN" secondAttribute="trailing" constant="20" id="NVq-FW-3jn"/>
+                                        <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="llS-xl-oeN" secondAttribute="bottom" id="Qfx-fC-Bd1"/>
                                         <constraint firstItem="pTi-8x-4vd" firstAttribute="top" secondItem="WB0-8a-CBm" secondAttribute="topMargin" constant="10" id="bXc-kS-GO7"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="llS-xl-oeN" secondAttribute="bottom" id="roJ-iK-Ba3"/>
                                         <constraint firstItem="llS-xl-oeN" firstAttribute="centerY" secondItem="WB0-8a-CBm" secondAttribute="centerY" id="vsR-GB-1b2"/>
@@ -65,6 +72,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Listings" id="wnL-Wt-UFl"/>
+                    <connections>
+                        <outlet property="searchBar" destination="G2G-cC-afZ" id="gx3-gC-ZVv"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I6e-Kz-P2G" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

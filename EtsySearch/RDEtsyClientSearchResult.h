@@ -12,13 +12,14 @@
 
 @interface RDEtsyClientSearchResult : NSObject
 
-@property(nonatomic, strong) NSArray<RDEtsySearchResultItem*> *results;
+@property (nonatomic, strong) NSArray<RDEtsySearchResultItem*> *results;
 @property (nonatomic, strong) NSURL *searchURL;
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger nextPage;
 
 
 - (instancetype)initWithResults:(NSArray *)results currentPage:(NSInteger)currentPage nextPage:(NSInteger)nextPage searchURL:(NSURL *)searchURL;
+
 
 @end
  
