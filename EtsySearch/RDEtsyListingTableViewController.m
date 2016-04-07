@@ -108,15 +108,20 @@ static NSInteger LoadMoreDataThreshold = 8;
     
 }
 
-- (void)configureCell:(RDEtsyListingTableViewCell *)cell forSearchResultItem:(RDEtsySearchResultItem *)searchResultItem {
+- (void)configureCell:(RDEtsyListingTableViewCell *)cell forSearchResultItem:(RDEtsySearchResultItem *)searchResultItem atIndexPath:(NSIndexPath *)indexPath {
     cell.listingTitle.text = searchResultItem.title;
     cell.imageView.image = nil;
 
     if (searchResultItem.imageURL) {
         [self.imageCache imageForURL:searchResultItem.imageURL completion:^(UIImage *image) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                cell.imageView.image = image;
-                [cell setNeedsLayout];
+                //Check if the cell is still present in the tableView
+                UITableViewCell *newCell = [self.tableView cellForRowAtIndexPath:indexPath];
+                if([newCell isKindOfClass:[RDEtsyListingTableViewCell class]]) {
+                    RDEtsyListingTableViewCell *listingTVC = (RDEtsyListingTableViewCell *)newCell;
+                    listingTVC.imageView.image = image;
+                    [listingTVC setNeedsLayout];
+                }
             });
         }];
     }
@@ -143,7 +148,7 @@ static NSInteger LoadMoreDataThreshold = 8;
     RDEtsySearchResultItem *searchResultItem = [self searchResultItemAtIndexPath:indexPath];
     if([cell isKindOfClass:[RDEtsyListingTableViewCell class]]) {
         RDEtsyListingTableViewCell *listingTableViewCell = (RDEtsyListingTableViewCell *)cell;
-        [self configureCell:listingTableViewCell forSearchResultItem:searchResultItem];
+        [self configureCell:listingTableViewCell forSearchResultItem:searchResultItem atIndexPath:indexPath];
     }
     
     return cell;
