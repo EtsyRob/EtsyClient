@@ -1,0 +1,33 @@
+{
+  "count": 50100,
+  "pagination": {
+    "effective_limit": 25,
+    "effective_offset": 0,
+    "effective_page": 1,
+    "next_offset": null,
+    "next_page": null
+  },
+  "params": {
+    "accepts_gift_cards": "false",
+    "category": null,
+    "color": null,
+    "color_accuracy": 0,
+    "geo_level": "city",
+    "keywords": "chair",
+    "lat": null,
+    "limit": 25,
+    "location": null,
+    "lon": null,
+    "max_price": null,
+    "min_price": null,
+    "offset": 0,
+    "page": null,
+    "region": null,
+    "sort_on": "created",
+    "sort_order": "down",
+    "tags": null,
+    "translate_keywords": "false"
+  },
+  "results": [],
+  "type": "Listing"
+}
