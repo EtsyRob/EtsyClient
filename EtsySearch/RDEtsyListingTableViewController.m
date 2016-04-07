@@ -81,7 +81,6 @@ static NSInteger LoadMoreDataThreshold = 8;
 
 - (void)loadDataWithQueryText:(NSString *)queryText {
     self.currentSearchText = queryText;
-    NSLog(@"Loading with text: %@", queryText);
 
     //Track the queries on a serial queue.  When a new operation comes in, cancel any outstanding operation
     //Another possible way of solving this would be to subclass NSOperation to add an AsyncBlockOperation
