@@ -12,7 +12,6 @@
 		D408BD1D1CB4669D004A08E7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D408BD1B1CB4669D004A08E7 /* Main.storyboard */; };
 		D408BD1F1CB4669D004A08E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D408BD1E1CB4669D004A08E7 /* Assets.xcassets */; };
 		D408BD221CB4669D004A08E7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D408BD201CB4669D004A08E7 /* LaunchScreen.storyboard */; };
-		D408BD2D1CB4669D004A08E7 /* EtsySearchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD2C1CB4669D004A08E7 /* EtsySearchTests.m */; };
 		D408BD391CB466BB004A08E7 /* RDEtsyClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD381CB466BB004A08E7 /* RDEtsyClient.m */; };
 		D408BD3D1CB4670D004A08E7 /* RDEtsyClientSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD3C1CB4670D004A08E7 /* RDEtsyClientSearchResult.m */; };
 		D408BD401CB4693F004A08E7 /* RDEtsySearchResultItem.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD3F1CB4693F004A08E7 /* RDEtsySearchResultItem.m */; };
@@ -24,6 +23,9 @@
 		D408BD4F1CB4825D004A08E7 /* RDEtsyListingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD4E1CB4825D004A08E7 /* RDEtsyListingTableViewCell.m */; };
 		D408BD521CB4886F004A08E7 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD511CB4886F004A08E7 /* UIColor+Hex.m */; };
 		D408BD551CB5CADE004A08E7 /* RDThumbnailImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD541CB5CADE004A08E7 /* RDThumbnailImageCache.m */; };
+		D408BD581CB5D295004A08E7 /* RDEtsyClientSearchResult+Backfill.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD571CB5D295004A08E7 /* RDEtsyClientSearchResult+Backfill.m */; };
+		D408BD5A1CB5D803004A08E7 /* RDTestEtsySearchResultParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D408BD591CB5D803004A08E7 /* RDTestEtsySearchResultParser.m */; };
+		D408BD5C1CB5D8CE004A08E7 /* TestData in Resources */ = {isa = PBXBuildFile; fileRef = D408BD5B1CB5D8CE004A08E7 /* TestData */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,7 +48,6 @@
 		D408BD211CB4669D004A08E7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D408BD231CB4669D004A08E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D408BD281CB4669D004A08E7 /* EtsySearchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EtsySearchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D408BD2C1CB4669D004A08E7 /* EtsySearchTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EtsySearchTests.m; sourceTree = "<group>"; };
 		D408BD2E1CB4669D004A08E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D408BD371CB466BB004A08E7 /* RDEtsyClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDEtsyClient.h; sourceTree = "<group>"; };
 		D408BD381CB466BB004A08E7 /* RDEtsyClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDEtsyClient.m; sourceTree = "<group>"; };
@@ -65,6 +66,10 @@
 		D408BD511CB4886F004A08E7 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		D408BD531CB5CADE004A08E7 /* RDThumbnailImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDThumbnailImageCache.h; sourceTree = "<group>"; };
 		D408BD541CB5CADE004A08E7 /* RDThumbnailImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDThumbnailImageCache.m; sourceTree = "<group>"; };
+		D408BD561CB5D295004A08E7 /* RDEtsyClientSearchResult+Backfill.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RDEtsyClientSearchResult+Backfill.h"; sourceTree = "<group>"; };
+		D408BD571CB5D295004A08E7 /* RDEtsyClientSearchResult+Backfill.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RDEtsyClientSearchResult+Backfill.m"; sourceTree = "<group>"; };
+		D408BD591CB5D803004A08E7 /* RDTestEtsySearchResultParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDTestEtsySearchResultParser.m; sourceTree = "<group>"; };
+		D408BD5B1CB5D8CE004A08E7 /* TestData */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TestData; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,8 +113,6 @@
 			children = (
 				D408BD121CB4669D004A08E7 /* AppDelegate.h */,
 				D408BD131CB4669D004A08E7 /* AppDelegate.m */,
-				D408BD411CB46A52004A08E7 /* RDEtsyListingTableViewController.h */,
-				D408BD421CB46A52004A08E7 /* RDEtsyListingTableViewController.m */,
 				D408BD1B1CB4669D004A08E7 /* Main.storyboard */,
 				D408BD1E1CB4669D004A08E7 /* Assets.xcassets */,
 				D408BD201CB4669D004A08E7 /* LaunchScreen.storyboard */,
@@ -118,8 +121,9 @@
 				D408BD3A1CB466F3004A08E7 /* Search */,
 				D408BD4D1CB4825D004A08E7 /* RDEtsyListingTableViewCell.h */,
 				D408BD4E1CB4825D004A08E7 /* RDEtsyListingTableViewCell.m */,
-				D408BD501CB4886F004A08E7 /* UIColor+Hex.h */,
-				D408BD511CB4886F004A08E7 /* UIColor+Hex.m */,
+				D408BD411CB46A52004A08E7 /* RDEtsyListingTableViewController.h */,
+				D408BD421CB46A52004A08E7 /* RDEtsyListingTableViewController.m */,
+				D408BD5D1CB5E350004A08E7 /* Extensions */,
 				D408BD531CB5CADE004A08E7 /* RDThumbnailImageCache.h */,
 				D408BD541CB5CADE004A08E7 /* RDThumbnailImageCache.m */,
 			);
@@ -137,9 +141,10 @@
 		D408BD2B1CB4669D004A08E7 /* EtsySearchTests */ = {
 			isa = PBXGroup;
 			children = (
-				D408BD2C1CB4669D004A08E7 /* EtsySearchTests.m */,
+				D408BD5B1CB5D8CE004A08E7 /* TestData */,
 				D408BD2E1CB4669D004A08E7 /* Info.plist */,
 				D408BD441CB46C3A004A08E7 /* RDTestEtsyClient.m */,
+				D408BD591CB5D803004A08E7 /* RDTestEtsySearchResultParser.m */,
 			);
 			path = EtsySearchTests;
 			sourceTree = "<group>";
@@ -157,6 +162,17 @@
 				D408BD491CB46F50004A08E7 /* RDEtsySearchResultParser.m */,
 			);
 			name = Search;
+			sourceTree = "<group>";
+		};
+		D408BD5D1CB5E350004A08E7 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				D408BD561CB5D295004A08E7 /* RDEtsyClientSearchResult+Backfill.h */,
+				D408BD571CB5D295004A08E7 /* RDEtsyClientSearchResult+Backfill.m */,
+				D408BD501CB4886F004A08E7 /* UIColor+Hex.h */,
+				D408BD511CB4886F004A08E7 /* UIColor+Hex.m */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -249,6 +265,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D408BD5C1CB5D8CE004A08E7 /* TestData in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,6 +285,7 @@
 				D408BD391CB466BB004A08E7 /* RDEtsyClient.m in Sources */,
 				D408BD3D1CB4670D004A08E7 /* RDEtsyClientSearchResult.m in Sources */,
 				D408BD431CB46A52004A08E7 /* RDEtsyListingTableViewController.m in Sources */,
+				D408BD581CB5D295004A08E7 /* RDEtsyClientSearchResult+Backfill.m in Sources */,
 				D408BD4F1CB4825D004A08E7 /* RDEtsyListingTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -277,8 +295,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D408BD461CB46CDC004A08E7 /* RDEtsyClient.m in Sources */,
-				D408BD2D1CB4669D004A08E7 /* EtsySearchTests.m in Sources */,
 				D408BD451CB46C3A004A08E7 /* RDTestEtsyClient.m in Sources */,
+				D408BD5A1CB5D803004A08E7 /* RDTestEtsySearchResultParser.m in Sources */,
 				D408BD471CB46D7F004A08E7 /* RDEtsyClientSearchResult.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

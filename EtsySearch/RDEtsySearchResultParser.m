@@ -13,7 +13,7 @@
 
 @implementation RDEtsySearchResultParser
 
-
+#pragma mark - Public Methods
 + (RDEtsyClientSearchResult *)parseResponseData:(NSData *)responseData forSearchURL:(NSURL *)searchURL {
     
     if(!responseData) {
@@ -45,6 +45,7 @@
 }
 
 
+#pragma mark - Private Methods
 + (NSArray *)resultItemsForResultArray:(NSArray *)resultArray {
     NSMutableArray *resultItems = [[NSMutableArray alloc] init];
     

@@ -18,6 +18,7 @@
 
 @implementation RDEtsyClient
 
+#pragma mark - Lifecycle Methods
 
 - (instancetype)initWithApiKey:(NSString *)apiKey {
     if(!apiKey) {
@@ -30,62 +31,28 @@
     return self;
 }
 
-- (NSURL *)listingURLForQueryText:(NSString *)queryText page:(NSNumber *)page {
-    //    https://api.etsy.com/v2/listings/active?api_key=liwecjs0c3ssk6let4p1wqt9&includes=MainImage&keywords=chair&page=2
-    
-    NSString *escapedSearch = [queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    
-    NSString *urlString = [NSString stringWithFormat:@"https://api.etsy.com/v2/listings/active?api_key=%@&includes=MainImage&keywords=%@", self.apiKey, escapedSearch];
-    if(page) {
-        urlString = [urlString stringByAppendingString:[NSString stringWithFormat:@"&page=%d", page.intValue]];
+#pragma mark - Public Methods
+
+- (void)getListingsWithQueryText:(NSString *)queryText completion:(void (^)(RDEtsyClientSearchResult *))completion {
+    if(!queryText) {
+        return completion(nil);
     }
     
-    NSURL *url = [[NSURL alloc] initWithString:urlString];
-    return url;
+    NSURL *searchURL = [self listingURLForQueryText:queryText];
+    [self getListingsWithURL:searchURL completion:completion];
     
 }
-- (NSURL *)listingURLForQueryText:(NSString *)queryText {
-    return [self listingURLForQueryText:queryText page:nil];
-}
 
-- (NSURL *)listingURLForNextPageWithSearchResult:(RDEtsyClientSearchResult *)searchResult {
-    NSURL *previousSearchURL = searchResult.searchURL;
-    
-    NSInteger nextPage = searchResult.nextPage;
-    
-    NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:previousSearchURL resolvingAgainstBaseURL:NO];
-    
-    NSMutableArray *queryItems = [[urlComponents queryItems] mutableCopy];
-    NSString *nextPageString = [NSString stringWithFormat:@"%ld", (long)nextPage];
-    
-    NSURLQueryItem *nextPageQueryItem = [NSURLQueryItem queryItemWithName:@"page" value:nextPageString];
-    
-    BOOL foundPage = NO;
-    //Swap the page query item with the next page
-    for(NSInteger i = 0; i < queryItems.count; i++) {
-        NSURLQueryItem *queryItem = queryItems[i];
-        if([queryItem.name isEqualToString:@"page"]) {
-            foundPage = YES;
-            queryItems[i] = nextPageQueryItem;
-            break;
-        }
-
+- (void)getMoreListingsWithSearchResult:(RDEtsyClientSearchResult *)searchResult completion:(void (^)(RDEtsyClientSearchResult *))completion {
+    NSURL *searchURL = [self listingURLForNextPageWithSearchResult:searchResult];
+    if(!searchURL) {
+        return completion(nil);
     }
-    if(!foundPage) {
-        [queryItems addObject:nextPageQueryItem];
-    }
-    
-
-    urlComponents.queryItems = queryItems;
-    NSURL *url = [urlComponents URL];
-    
-    return url;
+    [self getListingsWithURL:searchURL completion:completion];
     
 }
 
-- (BOOL)isValidResponseCode:(NSHTTPURLResponse *)response {
-    return (response.statusCode >= 200 && response.statusCode < 300);
-}
+#pragma mark - Private Methods
 
 - (void)getListingsWithURL:(NSURL *)url completion:(void (^)(RDEtsyClientSearchResult *))completion {
     NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -116,21 +83,65 @@
     }];
     
     [dataTask resume];
-
-}
-
-- (void)getListingsWithQueryText:(NSString *)queryText completion:(void (^)(RDEtsyClientSearchResult *))completion {
-    
-    NSURL *searchURL = [self listingURLForQueryText:queryText];
-    [self getListingsWithURL:searchURL completion:completion];
     
 }
 
-- (void)getMoreListingsWithSearchResult:(RDEtsyClientSearchResult *)searchResult completion:(void (^)(RDEtsyClientSearchResult *))completion {
-    NSURL *searchURL = [self listingURLForNextPageWithSearchResult:searchResult];
-    [self getListingsWithURL:searchURL completion:completion];
+- (NSURL *)listingURLForQueryText:(NSString *)queryText page:(NSNumber *)page {
+    
+    NSString *escapedSearch = [queryText stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    
+    NSString *urlString = [NSString stringWithFormat:@"https://api.etsy.com/v2/listings/active?api_key=%@&includes=MainImage&keywords=%@", self.apiKey, escapedSearch];
+    if(page) {
+        urlString = [urlString stringByAppendingString:[NSString stringWithFormat:@"&page=%d", page.intValue]];
+    }
+    
+    NSURL *url = [[NSURL alloc] initWithString:urlString];
+    return url;
+    
+}
+- (NSURL *)listingURLForQueryText:(NSString *)queryText {
+    return [self listingURLForQueryText:queryText page:nil];
+}
+
+- (NSURL *)listingURLForNextPageWithSearchResult:(RDEtsyClientSearchResult *)searchResult {
+    NSInteger nextPage = searchResult.nextPage;
+    if(nextPage == -1) {
+        return nil;
+    }
+    NSURL *previousSearchURL = searchResult.searchURL;
+    
+    NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:previousSearchURL resolvingAgainstBaseURL:NO];
+    
+    NSMutableArray *queryItems = [[urlComponents queryItems] mutableCopy];
+    NSString *nextPageString = [NSString stringWithFormat:@"%ld", (long)nextPage];
+    
+    NSURLQueryItem *nextPageQueryItem = [NSURLQueryItem queryItemWithName:@"page" value:nextPageString];
+    
+    BOOL foundPage = NO;
+    //Swap the page query item with the next page
+    for(NSInteger i = 0; i < queryItems.count; i++) {
+        NSURLQueryItem *queryItem = queryItems[i];
+        if([queryItem.name isEqualToString:@"page"]) {
+            foundPage = YES;
+            queryItems[i] = nextPageQueryItem;
+            break;
+        }
+        
+    }
+    if(!foundPage) {
+        [queryItems addObject:nextPageQueryItem];
+    }
+    
+    
+    urlComponents.queryItems = queryItems;
+    NSURL *url = [urlComponents URL];
+    
+    return url;
     
 }
 
+- (BOOL)isValidResponseCode:(NSHTTPURLResponse *)response {
+    return (response.statusCode >= 200 && response.statusCode < 300);
+}
 
 @end

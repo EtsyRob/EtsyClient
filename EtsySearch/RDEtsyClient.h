@@ -14,9 +14,7 @@
 
 
 - (instancetype)initWithApiKey:(NSString *)apiKey;
-
 - (void)getListingsWithQueryText:(NSString *)queryText completion:(void (^)(RDEtsyClientSearchResult *))completion;
-
 - (void)getMoreListingsWithSearchResult:(RDEtsyClientSearchResult *)searchResult completion:(void (^)(RDEtsyClientSearchResult *))completion;
 
 @end

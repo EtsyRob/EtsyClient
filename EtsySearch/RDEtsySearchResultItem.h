@@ -10,12 +10,11 @@
 
 @interface RDEtsySearchResultItem : NSObject
 
-@property (nonatomic, assign) NSInteger listing_id;
-@property (nonatomic, copy) NSString *title;
-@property (nonatomic, copy) NSString *itemDescription;
-@property (nonatomic, strong) NSURL *listingURL;
-@property (nonatomic, strong) NSURL *imageURL;
-
+@property (nonatomic, assign, readonly) NSInteger listing_id;
+@property (nonatomic, copy, readonly) NSString *title;
+@property (nonatomic, copy, readonly) NSString *itemDescription;
+@property (nonatomic, strong, readonly) NSURL *listingURL;
+@property (nonatomic, strong, readonly) NSURL *imageURL;
 
 
 - (instancetype)initWithListingID:(NSInteger)listingID

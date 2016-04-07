@@ -7,7 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RDEtsyClientSearchResult.h"
 
-@interface RDEtsyClientSearchResult_Backfill : NSObject
 
+@interface RDEtsyClientSearchResult(Backfill)
++ (RDEtsyClientSearchResult *)searchResultByPrependingSearchResult:(RDEtsyClientSearchResult *)fromSearchResult
+                                                  intoSearchResult:(RDEtsyClientSearchResult *)intoSearchResult;
 @end

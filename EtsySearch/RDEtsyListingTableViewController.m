@@ -6,52 +6,37 @@
 //  Copyright © 2016 Robert Day. All rights reserved.
 //
 
-#import "RDEtsyListingTableViewController.h"
-#import "RDEtsyClientSearchResult.h"
-#import "RDEtsySearchResultItem.h"
 #import "RDEtsyClient.h"
+#import "RDEtsyClientSearchResult.h"
+#import "RDEtsyClientSearchResult+Backfill.h"
 #import "RDEtsyListingTableViewCell.h"
-#import "UIColor+Hex.h"
+#import "RDEtsyListingTableViewController.h"
+#import "RDEtsySearchResultItem.h"
 #import "RDThumbnailImageCache.h"
+#import "UIColor+Hex.h"
 #import <SafariServices/SafariServices.h>
+
 
 static NSString *CellIdentifier = @"basicCellIdentifier";
 static NSString *ApiKey = @"liwecjs0c3ssk6let4p1wqt9";
 static NSString *DefaultSearchTerm = @"Wooden Chairs";
-
 static NSInteger LoadMoreDataThreshold = 8;
-
-@interface RDEtsyClientSearchResult(Backfill)
-+ (RDEtsyClientSearchResult *)searchResultByPrependingSearchResult:(RDEtsyClientSearchResult *)fromSearchResult intoSearchResult:(RDEtsyClientSearchResult *)intoSearchResult;
-@end
-
-@implementation RDEtsyClientSearchResult(Backfill)
-
-+ (RDEtsyClientSearchResult *)searchResultByPrependingSearchResult:(RDEtsyClientSearchResult *)fromSearchResult intoSearchResult:(RDEtsyClientSearchResult *)intoSearchResult {
-    
-    NSArray *newResults = [fromSearchResult.results arrayByAddingObjectsFromArray:intoSearchResult.results];
-    
-    RDEtsyClientSearchResult *newSearchResult = [[RDEtsyClientSearchResult alloc] initWithResults:newResults currentPage:intoSearchResult.currentPage nextPage:intoSearchResult.nextPage searchURL:intoSearchResult.searchURL];
-    return newSearchResult;
-}
-
-@end
 
 
 
 @interface RDEtsyListingTableViewController () <UISearchResultsUpdating>
-@property (nonatomic, strong) RDEtsyClientSearchResult *searchResult;
+
+@property (nonatomic, strong) RDEtsyClientSearchResult *searchResult; // Always modify on main thread
 @property (nonatomic, strong) RDEtsyClient *etsyClient;
 @property (nonatomic, strong) RDThumbnailImageCache *imageCache;
 @property (nonatomic, strong) UISearchController *searchController;
-
 @property (nonatomic) BOOL updating;
-
 
 @end
 
 @implementation RDEtsyListingTableViewController
 
+#pragma mark - Lifecycle Methods
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.etsyClient = [[RDEtsyClient alloc] initWithApiKey:ApiKey];
@@ -64,7 +49,6 @@ static NSInteger LoadMoreDataThreshold = 8;
     [self loadDataWithQueryText:DefaultSearchTerm];
 }
 
-
 - (void)setupSearchController {
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchController.searchResultsUpdater = self;
@@ -74,15 +58,16 @@ static NSInteger LoadMoreDataThreshold = 8;
 
 - (void)applyTheme {
     self.navigationController.navigationBar.barTintColor = [UIColor colorFromHexString:@"34A8C4"];
-
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
 }
+
+#pragma mark - Various Methods
 
 - (void)loadDataWithQueryText:(NSString *)queryText {
     //TODO: Should dispatch these onto a queue and only process the current and next search
     [self.etsyClient getListingsWithQueryText:queryText completion:^(RDEtsyClientSearchResult *searchResult) {
-    
         dispatch_async(dispatch_get_main_queue(), ^{
+            //Clear the cache whenever we search for new text
             [self.imageCache clearCache];
             self.searchResult = searchResult;
             [self.tableView reloadData];
@@ -91,16 +76,14 @@ static NSInteger LoadMoreDataThreshold = 8;
 }
 
 - (void)loadMoreResults {
-    if(self.updating) {
-        NSLog(@"Skipping loading more results, already updating...");
-    } else {
-        
+
+    if(!self.updating) {
         self.updating = YES;
         [self.etsyClient getMoreListingsWithSearchResult:self.searchResult completion:^(RDEtsyClientSearchResult *searchResult) {
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(searchResult) {
-                    RDEtsyClientSearchResult *newResults = [RDEtsyClientSearchResult searchResultByPrependingSearchResult:self.searchResult intoSearchResult:searchResult   ];
+                    RDEtsyClientSearchResult *newResults = [RDEtsyClientSearchResult searchResultByPrependingSearchResult:self.searchResult intoSearchResult:searchResult];
                     self.searchResult = newResults;
                 } else {
                     self.searchResult = searchResult;
@@ -118,7 +101,6 @@ static NSInteger LoadMoreDataThreshold = 8;
     if(!self.searchResult) {
         return nil;
     }
-    
     if(indexPath.row < [self.searchResult.results count]) {
         return self.searchResult.results[indexPath.row];
     }
@@ -138,9 +120,7 @@ static NSInteger LoadMoreDataThreshold = 8;
             });
         }];
     }
-
 }
-
 
 
 #pragma mark - UITableViewDatasource

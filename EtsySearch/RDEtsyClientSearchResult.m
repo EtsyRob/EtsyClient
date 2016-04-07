@@ -7,10 +7,6 @@
 //
 
 #import "RDEtsyClientSearchResult.h"
-@interface RDEtsyClientSearchResult ()
-
-
-@end
 
 @implementation RDEtsyClientSearchResult
 
