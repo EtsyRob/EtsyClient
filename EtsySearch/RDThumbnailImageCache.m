@@ -30,6 +30,10 @@
         NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
         NSURLSession *urlSession = [NSURLSession sessionWithConfiguration:sessionConfiguration];
         NSURLSessionDataTask *dataTask = [urlSession dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            if(error) {
+                NSLog(@"Error downloading image at url: %@, error: %@", url, error);
+                return completion(nil);
+            }
             //TODO: handle errors
             if(!data) {
                 return completion(nil);

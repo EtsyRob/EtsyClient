@@ -31,6 +31,7 @@ static NSInteger LoadMoreDataThreshold = 8;
 @property (nonatomic, strong) RDThumbnailImageCache *imageCache;
 @property (nonatomic, strong) UISearchController *searchController;
 @property (nonatomic) BOOL updating;
+@property (nonatomic, strong) NSOperationQueue *searchOperationQueue;
 
 @end
 
@@ -44,6 +45,8 @@ static NSInteger LoadMoreDataThreshold = 8;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.navigationController.navigationBarHidden = NO;
     self.imageCache = [[RDThumbnailImageCache alloc] init];
+    
+    
     [self applyTheme];
     [self setupSearchController];
     [self loadDataWithQueryText:DefaultSearchTerm];
@@ -61,17 +64,40 @@ static NSInteger LoadMoreDataThreshold = 8;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
 }
 
+#pragma mark - Getters & Setters
+
+- (NSOperationQueue *)searchOperationQueue {
+    if(!_searchOperationQueue) {
+        _searchOperationQueue = [[NSOperationQueue alloc] init];
+        _searchOperationQueue.maxConcurrentOperationCount = 1;
+        _searchOperationQueue.name = @"com.rob.etsySample";
+    }
+    
+    return _searchOperationQueue;
+}
+
 #pragma mark - Various Methods
 
+
 - (void)loadDataWithQueryText:(NSString *)queryText {
-    //TODO: Should dispatch these onto a queue and only process the current and next search
-    [self.etsyClient getListingsWithQueryText:queryText completion:^(RDEtsyClientSearchResult *searchResult) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            //Clear the cache whenever we search for new text
-            [self.imageCache clearCache];
-            self.searchResult = searchResult;
-            [self.tableView reloadData];
-        });
+
+    //Track the queries on a serial queue.  When a new operation comes in, cancel any outstanding operation
+    //Another possible way of solving this would be to subclass NSOperation to add an AsyncBlockOperation
+    //Additionally, it may be worthwhile to cancel the current running operation
+    [self.searchOperationQueue cancelAllOperations];
+    [self.searchOperationQueue addOperationWithBlock:^{
+        dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+        [self.etsyClient getListingsWithQueryText:queryText completion:^(RDEtsyClientSearchResult *searchResult) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //Clear the cache whenever we search for new text
+                [self.imageCache clearCache];
+                self.searchResult = searchResult;
+                [self.tableView reloadData];
+                dispatch_semaphore_signal(sema);
+            });
+        }];
+        
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     }];
 }
 
