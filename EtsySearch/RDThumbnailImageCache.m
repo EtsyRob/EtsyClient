@@ -8,6 +8,7 @@
 
 #import "RDThumbnailImageCache.h"
 @interface RDThumbnailImageCache ()
+// TODO: Comment on LRU
 @property (nonatomic, strong) NSCache *cache;
 @end
 
@@ -34,7 +35,6 @@
                 NSLog(@"Error downloading image at url: %@, error: %@", url, error);
                 return completion(nil);
             }
-            //TODO: handle errors
             if(!data) {
                 return completion(nil);
             }

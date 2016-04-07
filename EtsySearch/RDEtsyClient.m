@@ -79,7 +79,6 @@
         
         return completion(searchResult);
         
-        
     }];
     
     [dataTask resume];
@@ -105,7 +104,7 @@
 
 - (NSURL *)listingURLForNextPageWithSearchResult:(RDEtsyClientSearchResult *)searchResult {
     NSInteger nextPage = searchResult.nextPage;
-    if(nextPage == -1) {
+    if(nextPage == NoNextPageValue) {
         return nil;
     }
     NSURL *previousSearchURL = searchResult.searchURL;

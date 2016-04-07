@@ -10,8 +10,9 @@
 
 @class RDEtsyClientSearchResult;
 
-@interface RDEtsyClient : NSObject
+static NSInteger NoNextPageValue = -1;
 
+@interface RDEtsyClient : NSObject
 
 - (instancetype)initWithApiKey:(NSString *)apiKey;
 - (void)getListingsWithQueryText:(NSString *)queryText completion:(void (^)(RDEtsyClientSearchResult *))completion;

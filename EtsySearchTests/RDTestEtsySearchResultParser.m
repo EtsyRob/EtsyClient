@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 #import "RDEtsySearchResultParser.h"
 #import "RDEtsyClientSearchResult.h"
+#import "RDEtsyClient.h"
 
 @interface RDTestEtsySearchResultParser : XCTestCase
 @end
@@ -72,7 +73,7 @@
     XCTAssertNotNil(searchResult);
     XCTAssertEqual(searchResult.results.count, 0);
     XCTAssertEqual(searchResult.currentPage, 1 );
-    XCTAssertEqual(searchResult.nextPage, -1);
+    XCTAssertEqual(searchResult.nextPage, NoNextPageValue);
     
 }
 

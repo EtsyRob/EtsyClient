@@ -8,6 +8,7 @@
 #import "RDEtsySearchResultItem.h"
 #import "RDEtsySearchResultParser.h"
 #import "RDEtsyClientSearchResult.h"
+#import "RDEtsyClient.h"
 
 
 
@@ -36,7 +37,7 @@
     
     NSInteger effectivePage = [paginationInfo[@"effective_page"] integerValue];
     
-    NSInteger nextPage = (paginationInfo[@"next_page"] == [NSNull null] ? -1 : [paginationInfo[@"next_page"] integerValue]);
+    NSInteger nextPage = (paginationInfo[@"next_page"] == [NSNull null] ? NoNextPageValue : [paginationInfo[@"next_page"] integerValue]);
     
     RDEtsyClientSearchResult *searchResult = [[RDEtsyClientSearchResult alloc] initWithResults:parsedResultItems currentPage:effectivePage nextPage:nextPage searchURL:searchURL];
     

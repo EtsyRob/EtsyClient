@@ -17,7 +17,6 @@
 @property (nonatomic, assign, readonly) NSInteger currentPage;
 @property (nonatomic, assign, readonly) NSInteger nextPage;
 
-
 - (instancetype)initWithResults:(NSArray *)results currentPage:(NSInteger)currentPage nextPage:(NSInteger)nextPage searchURL:(NSURL *)searchURL;
 
 @end
