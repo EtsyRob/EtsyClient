@@ -13,6 +13,7 @@
 
 -(instancetype)init;
 
+-(BOOL)containsImageForURL:(NSURL *)url;
 -(void)imageForURL:(NSURL *)url completion:(void (^)(UIImage *))completion;
 -(void)clearCache;
 @end

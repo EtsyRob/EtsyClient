@@ -32,6 +32,7 @@ static NSInteger LoadMoreDataThreshold = 8;
 @property (nonatomic, strong) UISearchController *searchController;
 @property (nonatomic) BOOL updating;
 @property (nonatomic, strong) NSOperationQueue *searchOperationQueue;
+@property (nonatomic, strong) NSString *currentSearchText;
 
 @end
 
@@ -80,6 +81,7 @@ static NSInteger LoadMoreDataThreshold = 8;
 
 
 - (void)loadDataWithQueryText:(NSString *)queryText {
+    self.currentSearchText = queryText;
 
     //Track the queries on a serial queue.  When a new operation comes in, cancel any outstanding operation
     //Another possible way of solving this would be to subclass NSOperation to add an AsyncBlockOperation
@@ -199,16 +201,18 @@ static NSInteger LoadMoreDataThreshold = 8;
 #pragma mark - UISearchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     NSString *searchText;
+ 
     if([searchController.searchBar.text isEqualToString:@""]) {
         searchText = DefaultSearchTerm;
     } else {
         searchText = searchController.searchBar.text;
     }
     
-    [self loadDataWithQueryText:searchText];
+    if(![self.currentSearchText isEqualToString:searchText]) {
+        [self loadDataWithQueryText:searchText];    
+    }
+    
 }
-
-
 
 
 @end

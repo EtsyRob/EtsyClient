@@ -53,4 +53,8 @@
 - (void)clearCache {
     [self.cache removeAllObjects];
 }
+
+- (BOOL)containsImageForURL:(NSURL *)url {
+    return [self.cache objectForKey:url] != nil;
+}
 @end
