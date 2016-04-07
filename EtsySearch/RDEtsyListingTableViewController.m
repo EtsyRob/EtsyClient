@@ -22,8 +22,6 @@ static NSString *ApiKey = @"liwecjs0c3ssk6let4p1wqt9";
 static NSString *DefaultSearchTerm = @"Wooden Chairs";
 static NSInteger LoadMoreDataThreshold = 8;
 
-
-
 @interface RDEtsyListingTableViewController () <UISearchResultsUpdating>
 
 @property (nonatomic, strong) RDEtsyClientSearchResult *searchResult; // Always modify on main thread
@@ -57,6 +55,7 @@ static NSInteger LoadMoreDataThreshold = 8;
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchController.searchResultsUpdater = self;
     self.searchController.dimsBackgroundDuringPresentation = NO;
+    self.definesPresentationContext = YES;
     self.tableView.tableHeaderView = self.searchController.searchBar;
 }
 
@@ -82,6 +81,7 @@ static NSInteger LoadMoreDataThreshold = 8;
 
 - (void)loadDataWithQueryText:(NSString *)queryText {
     self.currentSearchText = queryText;
+    NSLog(@"Loading with text: %@", queryText);
 
     //Track the queries on a serial queue.  When a new operation comes in, cancel any outstanding operation
     //Another possible way of solving this would be to subclass NSOperation to add an AsyncBlockOperation
@@ -200,18 +200,21 @@ static NSInteger LoadMoreDataThreshold = 8;
 
 #pragma mark - UISearchResultsUpdating
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(performSearchForSearchController) object:nil];
+    [self performSelector:@selector(performSearchForSearchController) withObject:nil afterDelay:0.3];
+}
+
+- (void)performSearchForSearchController {
     NSString *searchText;
- 
-    if([searchController.searchBar.text isEqualToString:@""]) {
+    
+    if([self.searchController.searchBar.text isEqualToString:@""]) {
         searchText = DefaultSearchTerm;
     } else {
-        searchText = searchController.searchBar.text;
+        searchText = self.searchController.searchBar.text;
     }
-    
     if(![self.currentSearchText isEqualToString:searchText]) {
-        [self loadDataWithQueryText:searchText];    
+        [self loadDataWithQueryText:searchText];
     }
-    
 }
 
 
