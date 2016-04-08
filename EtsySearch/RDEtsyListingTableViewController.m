@@ -22,7 +22,7 @@ static NSString *ApiKey = @"liwecjs0c3ssk6let4p1wqt9";
 static NSString *DefaultSearchTerm = @"Wooden Chairs";
 static NSInteger LoadMoreDataThreshold = 8;
 
-@interface RDEtsyListingTableViewController () <UISearchResultsUpdating>
+@interface RDEtsyListingTableViewController () <UISearchResultsUpdating, UIViewControllerPreviewingDelegate>
 
 @property (nonatomic, strong) RDEtsyClientSearchResult *searchResult; // Always modify on main thread
 @property (nonatomic, strong) RDEtsyClient *etsyClient;
@@ -49,6 +49,9 @@ static NSInteger LoadMoreDataThreshold = 8;
     [self applyTheme];
     [self setupSearchController];
     [self loadDataWithQueryText:DefaultSearchTerm];
+    
+    
+    [self registerForPreviewingWithDelegate:self sourceView:self.view];
 }
 
 - (void)setupSearchController {
@@ -214,6 +217,24 @@ static NSInteger LoadMoreDataThreshold = 8;
     if(![self.currentSearchText isEqualToString:searchText]) {
         [self loadDataWithQueryText:searchText];
     }
+}
+
+#pragma mark - UIViewControllerPreviewingDelegate
+
+- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+    if(indexPath) {
+        RDEtsySearchResultItem *searchResultItem = [self searchResultItemAtIndexPath:indexPath];
+        SFSafariViewController *safariViewController = [[SFSafariViewController alloc] initWithURL:searchResultItem.listingURL];
+        
+        return safariViewController;
+    }
+    return nil;
+
+}
+
+- (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
+    [self presentViewController:viewControllerToCommit animated:YES completion:nil];
 }
 
 

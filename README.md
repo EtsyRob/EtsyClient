@@ -21,3 +21,5 @@ Welcome to my EtsyClient.  This app pulls listing from the Etsy listings API and
 - Some unit tests actually hit the internet for test data.  If more time allotted, something like [OHHTTPStubs](https://github.com/AliSoftware/OHHTTPStubs) could be utilized to mock the web requests.  This makes tests both run faster and more reliably.
 
 - The initial loading state of the table is empty.  It would be nice to have some design shown when their has not yet been data loaded.
+
+- There are no spinners on the tableView. Depending on network lag, it would be nice to see a spinner whenever the user has submitted a search and is no longer typing.  I normally manage this with a state machine.  When states change, the UI updates to hide/show spinners.

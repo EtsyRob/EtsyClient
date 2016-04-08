@@ -8,7 +8,6 @@
 
 #import "RDThumbnailImageCache.h"
 @interface RDThumbnailImageCache ()
-// TODO: Comment on LRU
 @property (nonatomic, strong) NSCache *cache;
 @end
 
