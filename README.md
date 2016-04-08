@@ -14,7 +14,7 @@ Welcome to my EtsyClient.  This app pulls listing from the Etsy listings API and
 
 ## Implementation details due to time constraints
 
-- NSLog: I wouldn't use NSLog in a production app.  A better approach would be to use a logger that doesn't execute log statements when a build is in `Release` mode.  [XCGLogger](https://github.com/DaveWoodCom/XCGLogge) comes to mind as one logger that solves this well.
+- NSLog: I wouldn't use NSLog in a production app.  [XCGLogger](https://github.com/DaveWoodCom/XCGLogge) comes to mind as one logger that solves this well.
 
 - RDEtsySearchResultItem: this model only stores fields needed to complete this assignment.  Depending on requirements, it may be nice to extract additional fields from the API.  Additionally, `RDEtsySearchResultItem` defines a property `imageURL`.  The API returns multiple images but only one imageURL is extracted.  This could be changed if multiple images were required.
 
